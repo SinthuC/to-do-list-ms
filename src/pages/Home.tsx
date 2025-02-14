@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addList, addTask, editTask, deleteTask } from "../redux/listSlice";
 import { RootState } from "../redux/store";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 const generateRandomId = () => {
   return Date.now() + Math.floor(Math.random() * 1000);
@@ -88,6 +89,7 @@ const List: React.FC<ListProps> = ({
 };
 
 const TodoList: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedList, setSelectedList] = useState<string>("");
   const [selectedTask, setSelectedTask] = useState<Task>({
     id: "",
@@ -97,6 +99,7 @@ const TodoList: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState<boolean>(false);
   const state = useSelector((state: RootState) => state.list);
+  const { loggedInUser } = useSelector((state: RootState) => state.signUp);
 
   const dispatch = useDispatch();
 
@@ -144,17 +147,21 @@ const TodoList: React.FC = () => {
   };
 
   const onDelteTask = () => {
-    dispatch(deleteTask({
-      id: selectedList,
-      taskId: selectedTask.id,
-    }))
+    dispatch(
+      deleteTask({
+        id: selectedList,
+        taskId: selectedTask.id,
+      })
+    );
 
     toast.success("Delete task successful");
-  }
+  };
 
   useEffect(() => {
-    console.log("state change", state);
-  }, [state]);
+    if (!loggedInUser) {
+      navigate("/login");
+    }
+  }, []);
   return (
     <div className="flex p-4 overflow-auto h-full">
       <div className="flex space-x-4">
@@ -196,7 +203,6 @@ const Home: React.FC = () => {
   return (
     <>
       <Navbar />
-
       <div className="w-[90vw] h-[80vh] rounded-xl p-8 bg-white shadow-lg mx-auto mt-16 ">
         <TodoList />
       </div>

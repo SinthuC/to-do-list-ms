@@ -44,6 +44,7 @@ const AddListButton: React.FC<AddListProps> = ({ handleAddList }) => {
 
           <div className="flex mt-2 space-x-2">
             <Button
+              disabled={listName === ""}
               color="default"
               variant="solid"
               onClick={() => {
