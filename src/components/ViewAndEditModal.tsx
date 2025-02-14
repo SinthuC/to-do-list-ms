@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Input, Button, Form, Typography } from "antd";
-// import { PlusOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 interface Task {
   id: string;
@@ -21,18 +21,19 @@ interface ViewAndEditTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (title: string, desc: string) => void;
+  onDelete: () => void;
 
   //   onAddTask: (title: string, description: string) => void;
 }
 
 const ViewAndEditTaskModal: React.FC<ViewAndEditTaskModalProps> = ({
   task,
-  listId = "",
   isOpen = false,
   onClose,
   onSubmit,
+  onDelete,
 }) => {
-  const { Title, Text } = Typography;
+  const { Title } = Typography;
   const [type, setType] = useState<string>("view");
   const handleSubmit = async (values: {
     title: string;
@@ -40,17 +41,27 @@ const ViewAndEditTaskModal: React.FC<ViewAndEditTaskModalProps> = ({
   }) => {
     const { title, description } = values;
     onSubmit(title, description);
-    onClose();
-    form.resetFields();
-    console.log("VAL FROM MODAL", values, listId);
+    handleAfterClosed();
   };
 
+  const handleAfterClosed = () => {
+    setType("view");
+    onClose();
+    form.resetFields();
+  };
+
+  const handleDelete = () => {
+    onDelete();
+    handleAfterClosed();
+  };
   const [form] = Form.useForm();
   return (
     <Modal
       open={isOpen}
       title="Task details"
-      onCancel={() => onClose()}
+      onCancel={() => {
+        handleAfterClosed();
+      }}
       footer={null}
       className="max-w-lg mx-auto"
     >
@@ -82,7 +93,7 @@ const ViewAndEditTaskModal: React.FC<ViewAndEditTaskModalProps> = ({
 
           <div className="flex justify-end space-x-2">
             <Button
-              onClick={() => onClose()}
+              onClick={() => setType("view")}
               className="bg-gray-300 hover:bg-gray-400 text-gray-700"
             >
               Cancel
@@ -93,10 +104,40 @@ const ViewAndEditTaskModal: React.FC<ViewAndEditTaskModalProps> = ({
               htmlType="submit"
               className="bg-blue-500 hover:bg-blue-600 text-white"
             >
-              Add Task
+              Save
             </Button>
           </div>
         </Form>
+      )}
+
+      {type === "view" && (
+        <div className="flex flex-col space-y-2">
+          <Button
+            block
+            icon={<EditOutlined />}
+            onClick={() => {
+              form.setFieldsValue({
+                title: task.title,
+                description: task.desc,
+              });
+              setType("edit");
+            }}
+            className="bg-blue-500 text-white hover:bg-blue-600"
+          >
+            Edit
+          </Button>
+
+          <Button
+            block
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              handleDelete()
+            }}
+            className="bg-blue-500 text-white hover:bg-blue-600"
+          >
+            Delete
+          </Button>
+        </div>
       )}
     </Modal>
   );

@@ -36,32 +36,33 @@ const listSlice = createSlice({
       }
     },
     editTask: (state, action: PayloadAction<{ id: string; task: Task }>) => {
-      const id = action.payload.id;
+      const { id, task } = action.payload;
       const listIndex = state.lists.findIndex((list) => list.id === id);
 
       if (listIndex !== -1) {
-        state.lists[listIndex].tasks.push(action.payload.task);
+        const taskIndex = state.lists[listIndex].tasks.findIndex(
+          (t) => t.id === task.id
+        );
+        state.lists[listIndex].tasks[taskIndex] = task;
       }
     },
 
-    // logIn: (state, action: PayloadAction<SignUp>) => {
-    //   const { email, password } = action.payload;
-    //   const user = state.users.find(
-    //     (user) => user.email === email && user.password === password
-    //   );
+    deleteTask: (
+      state,
+      action: PayloadAction<{ id: string; taskId: string }>
+    ) => {
+      const { id, taskId } = action.payload;
+      const listIndex = state.lists.findIndex((list) => list.id === id);
 
-    //   if (user) {
-    //     state.loggedInUser = user;
-    //     state.error = null;
-    //   } else {
-    //     state.error = "Invalid email or password";
-    //   }
-    // },
-    // signUp: (state, action: PayloadAction<SignUp>) => {
-    //   state.users.push(action.payload);
-    // },
+      if (listIndex !== -1) {
+        const taskIndex = state.lists[listIndex].tasks.findIndex(
+          (t) => t.id === taskId
+        );
+        state.lists[listIndex].tasks.splice(taskIndex, 1);
+      }
+    },
   },
 });
 
-export const { addList, addTask, editTask } = listSlice.actions;
+export const { addList, addTask, editTask, deleteTask } = listSlice.actions;
 export default listSlice.reducer;

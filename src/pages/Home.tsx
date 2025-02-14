@@ -6,8 +6,9 @@ import AddButton from "../components/AddListButton";
 import AddTaskModal from "../components/AddTaskModal";
 import ViewAndEditTaskModal from "../components/ViewAndEditModal";
 import { useDispatch, useSelector } from "react-redux";
-import { addList, addTask, editTask } from "../redux/listSlice";
+import { addList, addTask, editTask, deleteTask } from "../redux/listSlice";
 import { RootState } from "../redux/store";
+import { toast } from "react-hot-toast";
 
 const generateRandomId = () => {
   return Date.now() + Math.floor(Math.random() * 1000);
@@ -116,6 +117,8 @@ const TodoList: React.FC = () => {
         tasks: [],
       })
     );
+
+    toast.success("Add list successful");
   };
 
   const onSubmitAddTask = (title: string, desc: string) => {
@@ -125,16 +128,29 @@ const TodoList: React.FC = () => {
         task: { id: generateRandomId().toString(), title: title, desc: desc },
       })
     );
+
+    toast.success("Add task successful");
   };
 
   const onSubmitEditTask = (title: string, desc: string) => {
     dispatch(
-      addTask({
+      editTask({
         id: selectedList,
-        task: { id: generateRandomId().toString(), title: title, desc: desc },
+        task: { id: selectedTask.id, title: title, desc: desc },
       })
     );
+
+    toast.success("Edit task successful");
   };
+
+  const onDelteTask = () => {
+    dispatch(deleteTask({
+      id: selectedList,
+      taskId: selectedTask.id,
+    }))
+
+    toast.success("Delete task successful");
+  }
 
   useEffect(() => {
     console.log("state change", state);
@@ -169,6 +185,7 @@ const TodoList: React.FC = () => {
           isOpen={isOpenEditModal}
           onClose={onCloseEditModal}
           onSubmit={onSubmitEditTask}
+          onDelete={onDelteTask}
         />
       </div>
     </div>
