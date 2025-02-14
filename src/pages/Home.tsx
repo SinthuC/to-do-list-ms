@@ -7,6 +7,7 @@ import AddTaskModal from "../components/AddTaskModal";
 import ViewAndEditTaskModal from "../components/ViewAndEditModal";
 import { useDispatch, useSelector } from "react-redux";
 import { addList, addTask, editTask, deleteTask } from "../redux/listSlice";
+import { logOut } from "../redux/signUpSlice";
 import { RootState } from "../redux/store";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router";
@@ -111,7 +112,6 @@ const TodoList: React.FC = () => {
     setIsOpenEditModal(false);
   };
 
-  //   console.log("list list state", state);
   const handleAddList = (title: string) => {
     dispatch(
       addList({
@@ -161,53 +161,51 @@ const TodoList: React.FC = () => {
     if (!loggedInUser) {
       navigate("/login");
     }
-  }, []);
-  return (
-    <div className="flex p-4 overflow-auto h-full">
-      <div className="flex space-x-4">
-        {state.lists.map((list) => (
-          <List
-            id={list.id}
-            key={list.id}
-            title={list.title}
-            tasks={list.tasks}
-            onClickAddTask={() => setIsOpenModal(true)}
-            onClickTask={() => setIsOpenEditModal(true)}
-            setSelectedList={setSelectedList}
-            setSelectedTask={setSelectedTask}
-            // onSubmitAddTask=()=>
-          />
-        ))}
-        <AddButton handleAddList={handleAddList} />
-        <AddTaskModal
-          listId={selectedList}
-          isOpen={isOpenModal}
-          onClose={onCloseModal}
-          onSubmit={onSubmitAddTask}
-        />
-
-        <ViewAndEditTaskModal
-          task={selectedTask}
-          listId={selectedList}
-          isOpen={isOpenEditModal}
-          onClose={onCloseEditModal}
-          onSubmit={onSubmitEditTask}
-          onDelete={onDelteTask}
-        />
-      </div>
-    </div>
-  );
-};
-
-const Home: React.FC = () => {
+  }, [loggedInUser]);
   return (
     <>
-      <Navbar />
+      <Navbar
+        logOut={() => {
+          dispatch(logOut());
+        }}
+      />
       <div className="w-[90vw] h-[80vh] rounded-xl p-8 bg-white shadow-lg mx-auto mt-16 ">
-        <TodoList />
+        <div className="flex p-4 overflow-auto h-full">
+          <div className="flex space-x-4">
+            {state.lists.map((list) => (
+              <List
+                id={list.id}
+                key={list.id}
+                title={list.title}
+                tasks={list.tasks}
+                onClickAddTask={() => setIsOpenModal(true)}
+                onClickTask={() => setIsOpenEditModal(true)}
+                setSelectedList={setSelectedList}
+                setSelectedTask={setSelectedTask}
+                // onSubmitAddTask=()=>
+              />
+            ))}
+            <AddButton handleAddList={handleAddList} />
+            <AddTaskModal
+              listId={selectedList}
+              isOpen={isOpenModal}
+              onClose={onCloseModal}
+              onSubmit={onSubmitAddTask}
+            />
+
+            <ViewAndEditTaskModal
+              task={selectedTask}
+              listId={selectedList}
+              isOpen={isOpenEditModal}
+              onClose={onCloseEditModal}
+              onSubmit={onSubmitEditTask}
+              onDelete={onDelteTask}
+            />
+          </div>
+        </div>
       </div>
     </>
   );
 };
 
-export default Home;
+export default TodoList;

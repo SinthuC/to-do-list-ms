@@ -34,11 +34,15 @@ const signUpSlice = createSlice({
         state.error = "Invalid email or password";
       }
     },
+    logOut: (state) => {
+      state.loggedInUser = null;
+      state.error = null;
+    },
     signUp: (state, action: PayloadAction<SignUp>) => {
       state.users.push(action.payload);
     },
   },
 });
 
-export const { signUp, logIn } = signUpSlice.actions;
+export const { signUp, logIn, logOut } = signUpSlice.actions;
 export default signUpSlice.reducer;

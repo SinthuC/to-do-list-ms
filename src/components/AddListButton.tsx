@@ -2,18 +2,6 @@ import React, { useState } from "react";
 import { Button, Input } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 
-interface Task {
-  id: string;
-  title: string;
-  desc: string;
-}
-
-interface List {
-  id: string;
-  title: string;
-  tasks: Task[];
-}
-
 type AddListProps = {
   handleAddList: (title: string) => void;
 };
@@ -55,11 +43,7 @@ const AddListButton: React.FC<AddListProps> = ({ handleAddList }) => {
             >
               Add List
             </Button>
-            <Button
-              type="text"
-              onClick={() => setIsAdding(false)}
-              //   className="w-full bg-gray-300 hover:bg-gray-400"
-            >
+            <Button type="text" onClick={() => setIsAdding(false)}>
               <CloseOutlined />
             </Button>
           </div>

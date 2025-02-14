@@ -7,23 +7,14 @@ interface Task {
   title: string;
   desc: string;
 }
-// interface List {
-//   id: string;
-//   title: string;import { Typography } from 'antd';
-
-//   tasks: Task[];
-// }
 
 interface ViewAndEditTaskModalProps {
-  // type: "view" | "edit";
   listId: string | undefined;
   task: Task;
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (title: string, desc: string) => void;
   onDelete: () => void;
-
-  //   onAddTask: (title: string, description: string) => void;
 }
 
 const ViewAndEditTaskModal: React.FC<ViewAndEditTaskModalProps> = ({
@@ -131,7 +122,7 @@ const ViewAndEditTaskModal: React.FC<ViewAndEditTaskModalProps> = ({
             block
             icon={<DeleteOutlined />}
             onClick={() => {
-              handleDelete()
+              handleDelete();
             }}
             className="bg-blue-500 text-white hover:bg-blue-600"
           >
